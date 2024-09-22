@@ -236,25 +236,70 @@ the end of the year.
 ```
 #!/bin/bash
 
-# Initialize balance variable
-balance=0
-
-# Function to calculate interest for savings account
-savings_acct() {
-    # Calculate interest based on balance
-    if [[ $balance -le 100000 ]]; then
-        # For balance less than or equal to 1 lakh, interest is 3.5%
-        interest=$(echo "$balance * 0.035" | bc)
-    elif [[ $balance -le 500000 ]]; then
-        # For balance between 1 lakh and 5 lakh, interest is 6% on the amount over 1 lakh
-        interest=$(echo "100000 * 0.035 + ($balance - 100000) * 0.06" | bc)
+# Function to calculate savings account balance with interest
+# Interest rules:
+# - 3.5% for balance < ₹1,00,000
+# - 6% for balance between ₹1,00,000 and ₹5,00,000 (on amount above ₹1,00,000)
+# - 7% for balance > ₹5,00,000 (on amount above ₹5,00,000)
+calculate_savings_balance() {
+    balance=$1
+    # Check if balance is less than ₹1,00,000
+    if (( $(echo "$balance < 100000" | bc -l) )); then
+        # 3.5% interest for balance < ₹1,00,000
+        interest=$(echo "scale=2; $balance * 3.5 / 100" | bc)
+    # Check if balance is between ₹1,00,000 and ₹5,00,000
+    elif (( $(echo "$balance <= 500000" | bc -l) )); then
+        # 6% interest for balance over ₹1,00,000 and 3.5% for first ₹1,00,000
+        interest=$(echo "scale=2; (6 / 100 * ($balance - 100000)) + (3.5 / 100 * 100000)" | bc)
     else
-        # For balance greater than 5 lakh, interest is 7% on the amount over 5 lakh
-        interest=$(echo "100000 * 0.035 + 400000 * 0.06 + ($balance - 500000) * 0.07" | bc)
+        # 7% interest for balance over ₹5,00,000, 6% for ₹1,00,000-₹5,00,000, 3.5% for first ₹1,00,000
+        interest=$(echo "scale=2; (7 / 100 * ($balance - 500000)) + (6 / 100 * 400000) + (3.5 / 100 * 100000)" | bc)
     fi
+    # Calculate final balance by adding interest
+    final_balance=$(echo "scale=2; $balance + $interest" | bc)
+    echo "Final Balance after 1 year: ₹$final_balance"
+}
+
+# Function to calculate deposit account balance
+# Takes deposit type as input: "simple" or "compound"
+# Assumes fixed rate of 10% and time = 3 years for deposit accounts
+calculate_deposit_balance() {
+    principal=$1
+    rate=10
+    time=3
+    interest_type=$2
     
-    # Calculate final balance after adding interest
-    final_balance=$(echo "$balance + $interest" |
+    # For simple interest, use the formula: (P * R * T) / 100
+    if [ "$interest_type" == "simple" ]; then
+        simple_interest=$(echo "scale=2; ($principal * $rate * $time) / 100" | bc)
+        total_amount=$(echo "scale=2; $principal + $simple_interest" | bc)
+    # For compound interest, use the formula: P * (1 + R/100)^T
+    elif [ "$interest_type" == "compound" ]; then
+        total_amount=$(echo "scale=2; $principal * (1 + $rate / 100)^$time" | bc -l)
+    fi
+    echo "Final Balance after $time years: ₹$total_amount"
+}
+
+# Prompt the user to enter account type (savings or deposit)
+read -p "Enter account type (savings/deposit): " account_type
+
+# Prompt the user to enter the opening balance (initial amount)
+read -p "Enter opening balance: " opening_balance
+
+# If account type is savings, calculate savings balance
+if [ "$account_type" == "savings" ]; then
+    calculate_savings_balance $opening_balance
+
+# If account type is deposit, ask for deposit type (simple or compound) and calculate balance
+elif [ "$account_type" == "deposit" ]; then
+    read -p "Enter deposit type (simple/compound): " deposit_type
+    calculate_deposit_balance $opening_balance $deposit_type
+
+# If account type is invalid, print an error message
+else
+    echo "Invalid account type!"
+fi
+
 ```
 ## extra lab session --------------------------------------------------------
 
