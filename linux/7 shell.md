@@ -234,71 +234,108 @@ the end of the year.
 
 
 ```
-#!/bin/bash
 
-# Function to calculate savings account balance with interest
-# Interest rules:
-# - 3.5% for balance < ₹1,00,000
-# - 6% for balance between ₹1,00,000 and ₹5,00,000 (on amount above ₹1,00,000)
-# - 7% for balance > ₹5,00,000 (on amount above ₹5,00,000)
-calculate_savings_balance() {
-    balance=$1
-    # Check if balance is less than ₹1,00,000
-    if (( $(echo "$balance < 100000" | bc -l) )); then
-        # 3.5% interest for balance < ₹1,00,000
-        interest=$(echo "scale=2; $balance * 3.5 / 100" | bc)
-    # Check if balance is between ₹1,00,000 and ₹5,00,000
-    elif (( $(echo "$balance <= 500000" | bc -l) )); then
-        # 6% interest for balance over ₹1,00,000 and 3.5% for first ₹1,00,000
-        interest=$(echo "scale=2; (6 / 100 * ($balance - 100000)) + (3.5 / 100 * 100000)" | bc)
+    
+   #!/bin/bash
+
+# Prompt for account type
+echo "Enter account type (current, savings, deposit):"
+read account_type
+
+if [ "$account_type" == "current" ]; then
+    echo "Current account: No interest is paid."
+
+elif [ "$account_type" == "savings" ]; then
+    echo "Enter balance (in rupees):"
+    read balance
+
+    if [ $(echo "$balance < 100000" | bc) -eq 1 ]; then
+        interest_rate=3.5
+        interest=$(echo "scale=2; $balance * $interest_rate / 100" | bc)
+    	final_amount=$(echo "scale=2; $balance + $interest" | bc)
+
+  	echo "Interest rate: $interest_rate% PA"
+  	echo "Balance at the end of the year: Rs $final_amount"
+    elif [ $(echo "$balance <= 500000" | bc) -eq 1 ]; then
+        balancer=100000
+        interest_rate=3.5       
+        balanceu=$(echo "$balance-$balancer" | bc )
+        interest=$(echo "scale=2; $balancer * $interest_rate / 100" | bc)
+        final_amount=$(echo "scale=2; $balancer + $interest" | bc)
+        echo "Interest rate on $balancer amount: $interest_rate% PA"
+        echo "Balance: Rs $final_amount"   
+        
+             
+        interest_rate=6
+        interest=$(echo "scale=2; $balanceu * $interest_rate / 100" | bc)
+        final_amount1=$(echo "scale=2; $balanceu + $interest" | bc)
+        echo "Interest rate on $balanceu amount: $interest_rate% PA"
+        echo "Balance: Rs $final_amount1" 
+        final_amounto=$(echo "$final_amount + $final_amount1 " | bc )
+        echo "Overall balance at the end of the year: Rs $final_amounto"
+        
+        
+        
     else
-        # 7% interest for balance over ₹5,00,000, 6% for ₹1,00,000-₹5,00,000, 3.5% for first ₹1,00,000
-        interest=$(echo "scale=2; (7 / 100 * ($balance - 500000)) + (6 / 100 * 400000) + (3.5 / 100 * 100000)" | bc)
+        balancer=100000
+        interest_rate=3.5       
+        balanceu=$(echo "$balance-$balancer" | bc )
+        interest=$(echo "scale=2; $balancer * $interest_rate / 100" | bc)
+        final_amount=$(echo "scale=2; $balancer + $interest" | bc)
+        echo "Interest rate on $balancer amount: $interest_rate% PA"
+        echo "Balance: Rs $final_amount"        
+        
+        balancer=500000
+        interest_rate=6       
+        balanceu=$(echo "$balanceu-$balancer" | bc )
+                interest=$(echo "scale=2; $balancer * $interest_rate / 100" | bc)
+        final_amount1=$(echo "scale=2; $balancer + $interest" | bc)
+        echo "Interest rate on $balancer amount: $interest_rate% PA"
+        echo "Balance: Rs $final_amount1" 
+        
+        interest_rate=7
+        interest=$(echo "scale=2; $balanceu * $interest_rate / 100" | bc)
+        final_amount2=$(echo "scale=2; $balanceu + $interest" | bc)
+        echo "Interest rate on $balanceu amount: $interest_rate% PA"
+        echo "Balance: Rs $final_amount2" 
+        final_amounto=$(echo "$final_amount + $final_amount1 + $final_amount2 " | bc )
+        echo "Overall balance at the end of the year: Rs $final_amounto"
+        
     fi
-    # Calculate final balance by adding interest
-    final_balance=$(echo "scale=2; $balance + $interest" | bc)
-    echo "Final Balance after 1 year: ₹$final_balance"
-}
 
-# Function to calculate deposit account balance
-# Takes deposit type as input: "simple" or "compound"
-# Assumes fixed rate of 10% and time = 3 years for deposit accounts
-calculate_deposit_balance() {
-    principal=$1
+   # interest=$(echo "scale=2; $balance * $interest_rate / 100" | bc)
+ #   final_amount=$(echo "scale=2; $balance + $interest" | bc)
+
+  #echo "Interest rate: $interest_rate% PA"
+  #echo "Balance at the end of the year: Rs $final_amount"
+
+elif [ "$account_type" == "deposit" ]; then
+    echo "Enter deposit type (simple or compound):"
+    read deposit_type
+    echo "Enter principal amount (in rupees):"
+    read principal
+
     rate=10
     time=3
-    interest_type=$2
-    
-    # For simple interest, use the formula: (P * R * T) / 100
-    if [ "$interest_type" == "simple" ]; then
+
+    if [ "$deposit_type" == "simple" ]; then
         simple_interest=$(echo "scale=2; ($principal * $rate * $time) / 100" | bc)
-        total_amount=$(echo "scale=2; $principal + $simple_interest" | bc)
-    # For compound interest, use the formula: P * (1 + R/100)^T
-    elif [ "$interest_type" == "compound" ]; then
-        total_amount=$(echo "scale=2; $principal * (1 + $rate / 100)^$time" | bc -l)
+        final_amount=$(echo "scale=2; $principal + $simple_interest" | bc)
+        echo "Simple Interest: Rs $simple_interest"
+        echo "Final amount: Rs $final_amount"
+
+    elif [ "$deposit_type" == "compound" ]; then
+        final_amount=$(echo "scale=2; $principal * (1 + ($rate / 100)) ^ $time" | bc -l)
+        echo "Final amount: Rs $final_amount"
+
+    else
+        echo "Invalid deposit type"
     fi
-    echo "Final Balance after $time years: ₹$total_amount"
-}
 
-# Prompt the user to enter account type (savings or deposit)
-read -p "Enter account type (savings/deposit): " account_type
-
-# Prompt the user to enter the opening balance (initial amount)
-read -p "Enter opening balance: " opening_balance
-
-# If account type is savings, calculate savings balance
-if [ "$account_type" == "savings" ]; then
-    calculate_savings_balance $opening_balance
-
-# If account type is deposit, ask for deposit type (simple or compound) and calculate balance
-elif [ "$account_type" == "deposit" ]; then
-    read -p "Enter deposit type (simple/compound): " deposit_type
-    calculate_deposit_balance $opening_balance $deposit_type
-
-# If account type is invalid, print an error message
 else
-    echo "Invalid account type!"
+    echo "Invalid account type"
 fi
+
 
 ```
 ## extra lab session --------------------------------------------------------
