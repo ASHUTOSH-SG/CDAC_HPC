@@ -1038,3 +1038,69 @@ done
 - Ensure you replace `eth0` in the scripts with the actual name of your Ethernet interface if it differs.
 - The scripts assume that the `ip` command is available on your system. If it is not, you may need to install the appropriate networking tools.
 
+- Here are the Linux/Unix commands for your new tasks:
+
+1. **To check the default runlevel**:
+   - On systems using `systemd` (modern Linux systems):
+     ```bash
+     systemctl get-default
+     ```
+   - On systems still using `init`:
+     ```bash
+     who -r
+     ```
+
+2. **To display lines 6 to 15 from the `/etc/passwd` file in sorted order**:
+   ```bash
+   sort /etc/passwd | sed -n '6,15p'
+   ```
+
+3. **To display the 5th to 10th fields of the file `employee.dat` (where fields are separated by colons ":")**:
+   ```bash
+   cut -d':' -f5-10 employee.dat
+   ```
+
+4. **To list all lines starting with 'a' and ending with a digit or 'ed', from file `mydata.txt`**:
+   ```bash
+   grep '^a.*[0-9]\|ed$' mydata.txt
+   ```
+
+5. **To change the primary group of `user3` to `group7`**:
+   ```bash
+   sudo usermod -g group7 user3
+   ```
+
+
+   Here are the Linux/Unix commands for each of your tasks:
+
+1. **To set the runlevel to 5**:
+   - On systems using `systemd` (modern Linux systems), runlevels have been replaced by targets. Runlevel 5 typically corresponds to the graphical target, so to set it, use:
+     ```bash
+     sudo systemctl set-default graphical.target
+     ```
+   - On systems still using `init`, you can set the runlevel to 5 with:
+     ```bash
+     sudo init 5
+     ```
+
+2. **To display lines 5 to 7 from file `myfile123.txt` in sorted order**:
+   ```bash
+   sort myfile123.txt | sed -n '5,7p'
+   ```
+
+3. **To display the 5th to 10th fields of the file `emp.dat` (where fields are separated by commas)**:
+   ```bash
+   cut -d',' -f5-10 emp.dat
+   ```
+
+4. **To list all lines with 'p' at the 3rd position and ending with 'm' or 'ma', from file `mydata.txt`**:
+   ```bash
+   grep '^..p.*m\{1\}a\{0,1\}$' mydata.txt
+   ```
+
+5. **To change the ownership of the file `abc.txt`**:
+   ```bash
+   sudo chown new_owner abc.txt
+   ```
+   Replace `new_owner` with the appropriate username.
+
