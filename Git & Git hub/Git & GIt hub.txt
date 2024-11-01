@@ -1,0 +1,103 @@
+configuration git
+git config --global user.name "ashutosh"
+git config --global user.email "ashutosh@gmail.com"
+
+## show configuration information
+git config --list
+
+
+
+clone and status
+
+clone cloning a repo on your local machine
+git clone http://github.com/ashutosh/a
+
+
+show file
+ls 
+
+show hidden file
+ls -a
+
+git status 
+status display the state of the code
+git status
+
+1 untracked 
+new file that git doesn't yet track
+
+2 modified
+changed
+
+3 staged
+file is ready to be committed
+
+4 unmodified
+unchanged
+
+
+add and commit
+add
+add new or changed files in your working directory to the git staging area
+git add <-file name ->
+
+wat to add all changes then 
+git add .
+
+
+commit it is record of chang
+
+git commit -m "msg"
+
+
+push command 
+
+push - upload local repo content to remote repo
+
+
+git push origine main
+
+ 
+init command 
+
+used to create a new git repo
+
+git init
+git remote add origine <link>
+
+git remote-v (to verify remote)
+
+git branch (to chak branch)
+
+git branch-M main (to rename branch)
+
+git push origine main
+
+gpt take short example to explain this innit method only
+
+
+
+ 
+work flow digram
+
+github repo -> clone -> changes ->add -> commite -> push
+
+
+
+git branches
+
+
+branch commands
+
+git branch (to cheack branch)
+
+git branch -M main (to rename branch)
+
+git checkout <- branch name -> (to navigate)
+
+git checkout-b <- new branch name -> (to create new branch)
+
+git branche -d <- branch name -> (to delete branch)
+
+
+
