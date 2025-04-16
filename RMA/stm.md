@@ -477,9 +477,4 @@ Slurm's accounting functionality enables the collection and analysis of detailed
    - **Enable Accounting:** Set `AccountingStorageType=accounting_storage/slurmdbd` in `slurm.conf`.
    - **Define Accounting Storage Parameters:** Specify `AccountingStorageHost`, `AccountingStorageUser`, and other relevant settings.
 
-**Best Practices:**
-
-- **Regular Backups:** Perform routine backups of the accounting database to prevent data loss.
-- **Data Retention Policies:** Establish policies for how long accounting data is retained, balancing storage constraints with reporting needs.
-- **Access Controls:** Implement appropriate permissions to restrict access to sensitive accounting information.
 
