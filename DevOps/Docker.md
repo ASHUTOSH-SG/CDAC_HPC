@@ -219,7 +219,7 @@ httpd         latest    bbea29057f25   3 months ago   221MB
 ```
 docker rmi asutoshapp
 ```
-## what if we update project
+## what if we update project 
 
 - make another version
 ```
@@ -285,6 +285,7 @@ docker tag ashutoshapp:01 ASHUTOS-SG/app:tagname
 ## Docker Volumes
 
 - now you have app storing information permenently
+- permenent storage
 
 - so we have py programe to store name continuesly
 ```
